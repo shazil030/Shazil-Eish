@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Valentine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- GENERAL STYLES --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ec8383 0%, #ebedee 100%);
+            background-color: #db5d6c;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
+            width: 200px;
+            height: 200px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- BUTTONS --- */
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #yesBtn { background-color: #2ecc71; color: white; }
+        #noBtn { background-color: #ff4d6d; color: white; }
+        
+        /* Gift Buttons */
+        .gift-btn {
+            background-color: #ffb7b2;
+            color: #fff;
+            border: 2px solid #ff9a9e;
+            display: inline-block;
+            width: 120px;
+        }
+        .gift-btn:hover { background-color: #ff9a9e; transform: translateY(-3px); }
+
+        /* Surprise Button */
+        #surpriseBtn {
+            background: linear-gradient(45deg, #ff00cc, #333399);
+            color: white;
+            width: 80%;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 204, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 0, 204, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 204, 0); }
+        }
+
+        /* --- SECTIONS VISIBILITY --- */
+        #success-section, .modal { display: none; }
+
+        /* --- MODAL (POP-UPS) STYLES --- */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto; /* Allow scrolling on small screens */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: popUp 0.4s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            background: #ff4d6d;
+            color: white;
+            padding: 8px 20px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* --- MODAL DECORATIONS --- */
+        .modal-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+        
+        .modal-img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Decoration Emojis */
+        .decor {
+            font-size: 2rem;
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- SPECIAL THEME: COFFEE PROPOSAL --- */
+        .coffee-theme {
+            background-color: #d2b48c !important; /* Coffee color */
+            border: 4px solid #8b4513;
+            color: #3e2723;
+        }
+        .coffee-theme h2 {
+            color: #3e2723;
+            font-family: 'Pacifico', cursive;
+        }
+        .coffee-theme .modal-text {
+            color: #3e2723;
+            font-weight: bold;
+        }
+
+        /* --- PHOTO GRID FOR GIFT 3 --- */
+        .photo-grid {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .photo-grid img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            transform: rotate(-5deg);
+            animation: float 3s ease-in-out infinite;
+        }
+        .photo-grid img:nth-child(even) { transform: rotate(5deg); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="question-section">
+            <div class="gif-container">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2lnNmV3YTkxM2lub3lkNHVlamdwM2M0azMwOHNoN3cwM29ra3lkcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G0BtOHarUGMApaakZZ/giphy.gif" alt="Cute begging cat">
+            </div>
+            <h1>Will you be my Valentine?</h1>
+            <div class="buttons">
+                <button id="yesBtn">Yes 💌</button>
+                <button id="noBtn">No 🙁</button>
+            </div>
+        </div>
+
+        <div id="success-section">
+            <div class="gif-container">
+                <img src="https://media.tenor.com/gUiu1zyxfzYAAAAj/bear-kiss-bear-kisses.gif" alt="Cute kissing bears">
+            </div>
+            <h2 style="color: #ce334f; font-family: 'Pacifico';">Yay! Pick a gift! ❤️</h2>
+            
+            <button class="gift-btn" onclick="openModal('modal-gift1')">Gift 1</button>
+            <button class="gift-btn" onclick="openModal('modal-gift2')">Gift 2</button>
+            <button class="gift-btn" onclick="openModal('modal-gift3')">Gift 3</button>
+            
+            <br>
+            <button id="surpriseBtn" onclick="openModal('modal-surprise')">Surprise 🎉</button>
+
+            <p style="margin-top: 30px; font-size: 0.8rem; color: #aaa; cursor: pointer;" onclick="restart()">Restart Game</p>
+        </div>
+    </div>
+
+    <div id="modal-gift1" class="modal">
+        <div class="modal-content">
+            <span class="decor" style="top: 10px; left: 10px;">💕</span>
+            <span class="decor" style="bottom: 10px; right: 10px;">💕</span>
+            
+            <h2>My Dear Eish 🖤</h2>
+            <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnpieGE1d2dwYzVxcW8yajhmbzdwNXM5dXdkZzY0cndueG5lOGlsNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eUKcDf1G1Yj6Ap7Kyn/giphy.gif" class="modal-img" alt="Love gif">
+            <p class="modal-text">
+                Eish 🖤, I wish I could meet you before but unfortunately I am late but it's fine. Happy valentine's day churii. I hope this makes you happy 😉
+            </p>
+            
+            <button class="close-btn" onclick="closeModal('modal-gift1')">Close</button>
+        </div>
+    </div>
+
+    <div id="modal-gift2" class="modal">
+        <div class="modal-content">
+            <span class="decor" style="top: 10px; right: 20px;">💕</span>
+            <span class="decor" style="bottom: -5px; left: 10px;">💕</span>
+
+            <h2 style="color: #d90429;">Warning ⚠️</h2>
+            <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDJlZHh1cDF5NnJ3YzV6ZXdlZjdsM2cwdWhzdGcyeWZtOHR2Ymh6aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ANjMpBvC9LeRUopsoU/giphy.gif" class="modal-img" alt="Hug gif">
+            <p class="modal-text">
+                Congratulations! You are officially stuck with me forever
+                There is no escape now. I am going to annoy you with my love every single day. hehehe 😁😉🖤
+            </p>
+            <button class="close-btn" onclick="closeModal('modal-gift2')">Close</button>
+        </div>
+    </div>
+
+    <div id="modal-gift3" class="modal">
+        <div class="modal-content">
+            <span class="decor" style="top: 10; left: 2%;">💕</span>
+            
+            <h2> You Are Beautiful🖤</h2>
+
+            
+            <div class="photo-grid">
+                <img src="Her Photo 1.jpeg" alt="Her Photo 1">
+                <img src="Her Photo 2.jpeg" alt="Her Photo 2">
+                <img src="Her Photo 3.jpeg" alt="Her Photo 3">
+            </div>
+
+            <p class="modal-text">
+                You are so pretty Eish Allahumma barik 🖤👀, Well I like uh if I say no I would be lying, I never did such efforts for anyone before but for you I would. 🖤😭 Thanks for being my friend. I hope you find someone better who deserves you Eish🖤.
+            </p>
+            <span class="decor" style="bottom: 10px; right: 2%;">💕</span>
+            <button class="close-btn" onclick="closeModal('modal-gift3')">Close</button>
+        </div>
+    </div>
+
+    <div id="modal-surprise" class="modal">
+        <div class="modal-content coffee-theme">
+            <span class="decor" style="top: 20px; left: 20px;">💕</span> 
+            <span class="decor" style="top: 20px; right: 20px;">💕</span>
+            <span class="decor" style="bottom: -350px; left: 20px;">💕</span>
+            <span class="decor" style="bottom: -350px; right: 20px;">💕</span>
+
+            <h2>Can I have you for the rest of my life?</h2>
+            <img src="her photo 4.gif" class="modal-img" style="border-color: #8b4513;">
+            
+            <p class="modal-text">
+                I am starting to like you Eish🖤, I know you dont date neither do I. Maybe we ain't each others type cuz I think you are from open minded family and I aint from libreal family.<b> You might think its a prank but to be honest its not😐</b><br><br>
+                
+                <b> So, I wanna ask you? Will you be mine today, tomorrow and forever?</b>
+                
+            </p>
+            
+            <button class="close-btn" style="background-color: #5d4537;" onclick="closeModal('modal-surprise')">Pretty please Say Yes 🤧🖤</button>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionSection = document.getElementById('question-section');
+        const successSection = document.getElementById('success-section');
+
+        const noTexts = ["Are you sure?🙄", "Really sure?🙄", "Think again!🙄", "Last chance!🙄", "Surely not?🙄", "You might regret this!🙄", "Give it another thought!🙄", "Are you absolutely certain?🙄", "This could be a mistake!🙄", "Have a heart!🙄", "Don't be so cold!🙄", "Change of heart?🙄", "Wouldn't you reconsider?🙄", "Is that your final answer?🙄", "You're breaking my heart🙄 ;("];
+        let noCount = 0;
+
+        // No Button Logic
+        noBtn.addEventListener('click', () => {
+            noCount++;
+            if (noCount < noTexts.length) {
+                noBtn.innerText = noTexts[noCount];
+            } else {
+                noBtn.innerText = "Okay fine...";
+            }
+            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = `${currentSize * 1.4}px`;
+        });
+
+        // Yes Button Logic
+        yesBtn.addEventListener('click', () => {
+            questionSection.style.display = 'none';
+            successSection.style.display = 'block';
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        });
+
+        // Modal Logic
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = "flex";
+            
+            // Trigger confetti inside modal
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Close modal if clicking outside the box
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        // Restart Game
+        function restart() {
+            successSection.style.display = 'none';
+            questionSection.style.display = 'block';
+            noCount = 0;
+            noBtn.innerText = "No";
+            yesBtn.style.fontSize = '1.1rem';
+        }
+    </script>
+</body>
+</html>
